@@ -2,8 +2,11 @@ from spyne import Application, rpc, ServiceBase, Integer, Unicode, ComplexModel,
 from spyne.protocol.soap import Soap11
 from spyne.server.wsgi import WsgiApplication
 
-from soap_backend import get_student
+from soap_backend import get_student, create_student, delete_student, update_student
 
+class ResponseMsg(ComplexModel):
+    message = Unicode
+    error = Unicode
 
 # định nghĩa kiểu dữ liệu trả về
 class StudentResponse(ComplexModel):
@@ -29,7 +32,23 @@ class StudentService(ServiceBase):
             avg_Evaluation=data["avgEvaluation"],
             discipline_Evaluation=data["disciplineEvaluation"]
         )
-    
+
+    @rpc(Integer, Unicode, Float, Integer, _returns=ResponseMsg)
+    def createStudent(ctx, student_id, name, avgScore, disciplineScore):
+        result = create_student(student_id, name, avgScore, disciplineScore)
+        return ResponseMsg(message=result.get("message"), error=result.get("error"))
+
+    @rpc(Integer, Unicode, Float, Integer, _returns=ResponseMsg)
+    def updateStudent(ctx, student_id, name, avgScore, disciplineScore):
+        result = update_student(student_id, name, avgScore, disciplineScore)
+        return ResponseMsg(message=result.get("message"), error=result.get("error"))
+
+    @rpc(Integer, _returns=ResponseMsg)
+    def deleteStudent(ctx, student_id):
+        result = delete_student(student_id)
+        return ResponseMsg(message=result.get("message"), error=result.get("error"))
+
+
 # tạo ứng dụng SOAP
 application = Application(
     [StudentService], #service nào 

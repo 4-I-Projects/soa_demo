@@ -58,3 +58,31 @@ def get_student(student_id: int):
         "disciplineEvaluation": disclipline_evaluation
 
     }
+
+def create_student(student_id: int, name: str, avgScore: float, disciplineScore: int):
+    if student_id in STUDENTS:
+        return {"error": "Student already exists"}
+    STUDENTS[student_id] = {
+        "name": name,
+        "avgScore": avgScore,
+        "disciplineScore": disciplineScore
+    }
+    return {"message": "Student created successfully"}
+
+def delete_student(student_id: int):
+    if student_id not in STUDENTS:
+        return {"error": "Student not found"}
+    del STUDENTS[student_id]
+    return {"message": "Student deleted successfully"}
+
+def update_student(student_id: int, name: str = None, avgScore: float = None, disciplineScore: int = None):
+    student = STUDENTS.get(student_id)
+    if not student:
+        return {"error": "Student not found"}
+    if name:
+        student["name"] = name
+    if avgScore is not None:
+        student["avgScore"] = avgScore
+    if disciplineScore is not None:
+        student["disciplineScore"] = disciplineScore
+    return {"message": "Student updated successfully"}
