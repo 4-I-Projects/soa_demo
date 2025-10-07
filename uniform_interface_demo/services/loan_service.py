@@ -24,17 +24,17 @@ def return_book(loan_id):
         return {"error": "Loan not found"}
     if loan.status == "returned":
         return {"error": "Already returned"}
+
     loan.returned_at = datetime.utcnow()
-    if loan.is_overdue():
-        loan.status = "overdue"
-    else:
-        loan.status = "returned"
-    # increment book copies
+    loan.status = "overdue" if loan.is_overdue() else "returned"
+
     book = Book.query.get(loan.book_id)
     if book:
         book.copies_available = min(book.copies_total, book.copies_available + 1)
+
     db.session.commit()
     return loan
+
 
 def get_loan(loan_id):
     return Loan.query.get(loan_id)

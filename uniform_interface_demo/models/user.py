@@ -1,5 +1,6 @@
 from database import db
 from datetime import datetime
+from utils.hateoas import generate_user_links
 
 class User(db.Model):
     __tablename__ = "users"
@@ -18,5 +19,6 @@ class User(db.Model):
             "name": self.name,
             "email": self.email,
             "role": self.role,
-            "registered_at": self.registered_at.isoformat() if self.registered_at else None
+            "registered_at": self.registered_at.isoformat() if self.registered_at else None,
+            "_links": generate_user_links(self.id)
         }

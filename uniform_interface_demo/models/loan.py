@@ -1,5 +1,6 @@
 from database import db
 from datetime import datetime, timedelta
+from utils.hateoas import generate_loan_links
 
 class Loan(db.Model):
     __tablename__ = "loans"
@@ -31,5 +32,6 @@ class Loan(db.Model):
             "status": self.status,
             "borrowed_at": self.borrowed_at.isoformat() if self.borrowed_at else None,
             "due_date": self.due_date.isoformat() if self.due_date else None,
-            "returned_at": self.returned_at.isoformat() if self.returned_at else None
+            "returned_at": self.returned_at.isoformat() if self.returned_at else None,
+            "_links": generate_loan_links(self.id)
         }

@@ -3,18 +3,23 @@ from models.book import Book
 from sqlalchemy import and_
 
 def create_book(data):
-    book = Book(
-        isbn=data.get("isbn"),
-        title=data.get("title", "Untitled"),
-        author=data.get("author", "Unknown"),
-        year=data.get("year"),
-        genre=data.get("genre"),
-        copies_total=int(data.get("copies_total", 1)),
-        copies_available=int(data.get("copies_total", 1))
-    )
-    db.session.add(book)
-    db.session.commit()
-    return book
+    try:
+        book = Book(
+            isbn=data.get("isbn"),
+            title=data.get("title", "Untitled"),
+            author=data.get("author", "Unknown"),
+            year=data.get("year"),
+            genre=data.get("genre"),
+            copies_total=int(data.get("copies_total", 1)),
+            copies_available=int(data.get("copies_total", 1))
+        )
+        db.session.add(book)
+        db.session.commit()
+        return book
+    except Exception as e:
+        db.session.rollback()
+        raise e
+
 
 def get_books_paginated(filters, page=1, per_page=10):
     q = Book.query

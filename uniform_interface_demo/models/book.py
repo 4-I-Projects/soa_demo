@@ -1,5 +1,6 @@
 from database import db
 from datetime import datetime
+from utils.hateoas import generate_book_links
 
 class Book(db.Model):
     __tablename__ = 'books'
@@ -24,5 +25,6 @@ class Book(db.Model):
             "genre": self.genre,
             "copies_total": self.copies_total,
             "copies_available": self.copies_available,
-            "created_at": self.created_at.isoformat() if self.created_at else None
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "_links": generate_book_links(self.id)
         }
