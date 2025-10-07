@@ -10,13 +10,15 @@ class Loan(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey("books.id"), nullable=False)
     status = db.Column(db.String(20), default="borrowed", nullable=False)  # borrowed, returned, overdue
     borrowed_at = db.Column(db.DateTime, default=datetime.utcnow)
-    due_date = db.Column(db.DateTime)
+    due_date = db.Column(db.DateTime, nullable=True)
     returned_at = db.Column(db.DateTime, nullable=True)
 
     user = db.relationship("User", back_populates="loans")
-    book = db.relationship("Book")
+    book = db.relationship("Book", back_populates="loans")
 
     def set_due_default(self, days=14):
+        if not self.borrowed_at:
+            self.borrowed_at = datetime.utcnow()
         self.due_date = self.borrowed_at + timedelta(days=days)
 
     def is_overdue(self):

@@ -30,13 +30,12 @@ def generate_user_links(user_id=None):
 
 def generate_loan_links(loan_id=None):
     links = {
-        "self": url_for("loans_bp.list_loans", _external=True),
-        "create": url_for("loans_bp.create_loan", _external=True)
+        "self": url_for("loans_bp.create_loan_route", _external=True),
+        "create": url_for("loans_bp.create_loan_route", _external=True)
     }
     if loan_id:
         links.update({
-            "detail": url_for("loans_bp.get_loan", loan_id=loan_id, _external=True),
-            "update": url_for("loans_bp.update_loan", loan_id=loan_id, _external=True),
-            "delete": url_for("loans_bp.delete_loan", loan_id=loan_id, _external=True)
+            "detail": url_for("loans_bp.get_loan_route", loan_id=loan_id, _external=True),
+            "return": url_for("loans_bp.return_loan_route", loan_id=loan_id, _external=True),
         })
     return links

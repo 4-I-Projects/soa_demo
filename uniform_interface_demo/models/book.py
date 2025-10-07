@@ -14,6 +14,8 @@ class Book(db.Model):
     copies_total = db.Column(db.Integer, default=1, nullable=False)
     copies_available = db.Column(db.Integer, default=1, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    loans = db.relationship("Loan", back_populates="book", cascade="all, delete-orphan")
 
     def to_dict(self):
         return {
