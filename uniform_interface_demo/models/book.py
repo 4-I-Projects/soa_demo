@@ -28,5 +28,4 @@ class Book(db.Model):
             "copies_total": self.copies_total,
             "copies_available": self.copies_available,
             "created_at": self.created_at.isoformat() if self.created_at else None,
-            "_links": generate_book_links(self.id)
         }

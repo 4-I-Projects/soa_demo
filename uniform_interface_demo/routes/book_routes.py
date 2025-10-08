@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, url_for
 from services.book_service import create_book, get_books_paginated, get_book, update_book, delete_book
+from utils.hateoas import generate_book_links
 
 books_bp = Blueprint("books_bp", __name__)
 
@@ -16,10 +17,7 @@ def list_books():
     payload = {
         "books": [b.to_dict() for b in items],
         "meta": {"page": page, "per_page": per_page, "total": total, "pages": pages},
-        "_links": {
-            "self": url_for("books_bp.list_books", page=page, per_page=per_page, _external=True),
-            "create": url_for("books_bp.create_book", _external=True)
-        }
+        "_links": generate_book_links()
     }
     return jsonify(payload), 200
 
@@ -31,10 +29,7 @@ def create_book_route():
     resp = {
         "message": "Book created",
         "book": book.to_dict(),
-        "_links": {
-            "self": url_for("books_bp.get_book", book_id=book.id, _external=True),
-            "all": url_for("books_bp.list_books", _external=True)
-        }
+        "_links": generate_book_links(book.id)
     }
     return jsonify(resp), 201
 
@@ -46,11 +41,7 @@ def get_book_route(book_id):
         return jsonify({"error": "Book not found"}), 404
     resp = {
         "book": book.to_dict(),
-        "_links": {
-            "all": url_for("books_bp.list_books", _external=True),
-            "update": url_for("books_bp.update_book", book_id=book.id, _external=True),
-            "delete": url_for("books_bp.delete_book", book_id=book.id, _external=True)
-        }
+        "_links": generate_book_links(book.id)
     }
     return jsonify(resp), 200
 
@@ -64,10 +55,7 @@ def update_book_route(book_id):
     return jsonify({
         "message": "Book updated",
         "book": book.to_dict(),
-        "_links": {
-            "self": url_for("books_bp.get_book", book_id=book.id, _external=True),
-            "all": url_for("books_bp.list_books", _external=True)
-        }
+        "_links": generate_book_links(book.id)
     }), 200
 
 
@@ -78,8 +66,5 @@ def delete_book_route(book_id):
         return jsonify({"error": "Book not found"}), 404
     return jsonify({
         "message": "Book deleted",
-        "_links": {
-            "all": url_for("books_bp.list_books", _external=True),
-            "create": url_for("books_bp.create_book", _external=True)
-        }
+        "_links": generate_book_links()
     }), 200

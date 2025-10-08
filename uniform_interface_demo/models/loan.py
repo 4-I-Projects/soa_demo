@@ -35,5 +35,4 @@ class Loan(db.Model):
             "borrowed_at": self.borrowed_at.isoformat() if self.borrowed_at else None,
             "due_date": self.due_date.isoformat() if self.due_date else None,
             "returned_at": self.returned_at.isoformat() if self.returned_at else None,
-            "_links": generate_loan_links(self.id)
         }
