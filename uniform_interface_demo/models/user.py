@@ -9,7 +9,7 @@ class User(db.Model):
     name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     role = db.Column(db.String(20), default="reader", nullable=False)
-    registered_at = db.Column(db.DateTime, default=datetime.utcnow)
+    registered_at = db.Column(db.DateTime, default=datetime.now)
 
     loans = db.relationship("Loan", back_populates="user", cascade="all, delete-orphan")
 

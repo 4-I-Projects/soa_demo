@@ -1,5 +1,6 @@
-from flask import Blueprint, request, jsonify, url_for
+from flask import Blueprint, make_response, request, jsonify, url_for
 from services.book_service import create_book, get_books_paginated, get_book, update_book, delete_book
+from utils.cache import generate_etag
 from utils.hateoas import generate_book_links
 
 books_bp = Blueprint("books_bp", __name__)
@@ -39,11 +40,26 @@ def get_book_route(book_id):
     book = get_book(book_id)
     if not book:
         return jsonify({"error": "Book not found"}), 404
-    resp = {
-        "book": book.to_dict(),
-        "_links": generate_book_links(book.id)
-    }
-    return jsonify(resp), 200
+    
+    
+    book_data = book.to_dict()
+    etag = generate_etag(book_data)
+    
+    if request.headers.get("If-None-Match") == etag:
+        return '', 304  # Not Modified
+    
+    
+
+    resp = make_response(jsonify({ 
+        "book": book_data,
+        "_links": generate_book_links(book.id),
+    }))
+    
+
+    resp.headers["ETag"] = etag
+    resp.headers["Cache-Control"] = "public, max-age=60"
+    
+    return resp, 200
 
 
 @books_bp.route("/<int:book_id>", methods=["PUT"], endpoint="update_book")

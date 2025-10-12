@@ -9,7 +9,7 @@ class Loan(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     book_id = db.Column(db.Integer, db.ForeignKey("books.id"), nullable=False)
     status = db.Column(db.String(20), default="borrowed", nullable=False)  # borrowed, returned, overdue
-    borrowed_at = db.Column(db.DateTime, default=datetime.utcnow)
+    borrowed_at = db.Column(db.DateTime, default=datetime.now)
     due_date = db.Column(db.DateTime, nullable=True)
     returned_at = db.Column(db.DateTime, nullable=True)
 
@@ -18,12 +18,12 @@ class Loan(db.Model):
 
     def set_due_default(self, days=14):
         if not self.borrowed_at:
-            self.borrowed_at = datetime.utcnow()
+            self.borrowed_at = datetime.now()
         self.due_date = self.borrowed_at + timedelta(days=days)
 
     def is_overdue(self):
         if self.status == "borrowed" and self.due_date:
-            return datetime.utcnow() > self.due_date
+            return datetime.now() > self.due_date
         return False
 
     def to_dict(self):

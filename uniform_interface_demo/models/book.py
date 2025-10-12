@@ -13,7 +13,7 @@ class Book(db.Model):
     genre = db.Column(db.String(100), nullable=True)
     copies_total = db.Column(db.Integer, default=1, nullable=False)
     copies_available = db.Column(db.Integer, default=1, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now)
     
     loans = db.relationship("Loan", back_populates="book", cascade="all, delete-orphan")
 
